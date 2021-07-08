@@ -1,0 +1,42 @@
+---
+output:
+  pdf_document: default
+header-includes:
+  - \usepackage{color}
+---
+----
+ Summer 2021: Introduction to Data Science
+---
+
+```{r, echo = F, results = 'hide', message=F, warning = F}
+library(foreign)      #Default package for almost all code, lets your read files into R
+library(ggplot2)      #plotting package
+library(colorspace)   #better colors for ggplot
+library(broom)        #a widely used, but relatively new, package for producing tidier data and tidier output; part of tidyverse
+library(tidyverse)    #a widely used, but relatively new, package for producing tidier data and tidier output
+library(stargazer)    #produces pretty regression tables
+library(knitr)        #helps the knitting process. In particular, it lets the include_graphics command run
+library(gridExtra)    #allows grid.arrange() to produce prettier graphics
+library(GGally)       #for hte correlation matrix at the end ggpairs()
+library(ggridges)
+library(corrr)
+library(scales)
+library(knitr)
+```
+
+# Final Project
+
+### Authors: Michael Rabayda and Klaire Pham
+
+## Loading the data
+
+```{r, echo = T, results = 'hide', message=F, warning = F}
+listings_summary <- read_csv("listings_summary.csv")
+listings <- read_csv("listings.csv")
+```
+
+
+# Hypothesis/Research Questions(s)
+
+
+# Data Visualizations
