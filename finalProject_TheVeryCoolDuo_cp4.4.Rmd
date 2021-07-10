@@ -98,8 +98,53 @@ ggplot(data = luxury_listings, aes(x= price,
   theme_bw() +  theme(legend.position = "none")
 ```
 
+```{r}
+# Mikes 3 variable plots
+plotnumRevRatePrice <-plot_ly(FinalProjData, x = ~number_of_reviews, y = ~review_scores_rating,
+                           z = ~price ) %>%
+  add_markers(size = 5) %>% 
+  colorbar(title = "Price") %>%
+  layout(title = "Final Project - Airbnb prices by number of reviews and review rating score.",
+         scene = list(xaxis = list(title = 'Number of Reviews'),
+                      yaxis = list(title = 'Review Score Rating'),
+                      zaxis = list(title = 'Price')))
+
+htmlwidgets::saveWidget(plotnumRevRatePrice, "Final_plotnumRevRatePrice.html")  #save the interactive images as a .html file
+
+plotnumRevRatePrice
+browseURL(path.expand("~/share/Final_plotnumRevRatePrice.html.html"))
+
+
+
+plot_price_byNumReview <- ggplot(FinalProjData, aes(x=number_of_reviews, y=price)) +
+  geom_point(data=FinalProjData, aes(x=number_of_reviews,y=price ))+
+  scale_color_gradient2(low = "lightgrey", high = "red")+
+  labs(title = "Airbnb: Price to NumberofReviews",
+       x="Number of Reviews", 
+       y="Price in $" )+
+  theme_bw() + theme(legend.position = "none")
+
+plot_price_byReviewScore <- ggplot(FinalProjData, aes(x=review_scores_rating, y=price))+
+  geom_point(data=FinalProjData, aes(x=review_scores_rating,y=price ))+
+  scale_color_gradient2(low = "lightgrey", high = "red")+
+  labs(title = "Airbnb: Price to Review Score",
+       x="Review Scores Rating", 
+       y="Price in $" )+
+  theme_bw() + theme(legend.position = "none")
+
+grid.arrange(plot_price_byNumReview, plot_price_byReviewScore, ncol = 2)
+```
+
+
 The scatterplots show the relationship between price and number of reviews with reviews per month as the size of the points. In the first plot showing data from norm_listings, since the difference between the size of the points is not significant and most plot is heavily skewed towards the bottom right of the chart, it doesn't add too much new information. It can be inferred still that there is a slight negative correlation between price and number of reviews starting from Airbnb's that charged over 50 a night. There are definitely some interesting outliers -- places that receive exceptionally higher number of reviews also had more reviews per month than average. With the plot showing data from luxury_listings, the slightly negative correlation continues and the size of the points are less consistent. However, most useful data is clustered in the lower end, suggesting that there should be another round of filtering to inspect them appropriately. 
 
 The theories are supported by this graphic but not in the way that we stated earlier. With the addition of the variable review_per_month, an addition to the theory would be that as number of reviews increases, number of reviews per month increases as well. Honestly, after visualizing the data from the three chosen variables, it seems to me that we should revise altogether to figure out a set of new variables that work together better or better ways to visualize these relationships.
 
+
+#Mike
+What does your three variable + plot show that your 2 variable plots did not?
+First it shows that there are definitely some outliers and overplotting that we’re going to need to learn how to handle. The 3 dimensional graph really did a good job showing me where most of the data clusters, I think the next step would be to see which variables are skewed and need to be transformed so that we have normal distributions to relate and analyze.  The biggest thing was definitely seeing all 3 variables plotted together because its so much clearer that just plotting price with either of the remaining two variables as seen with the faceted 2D graphs. 
+
+Are either of your initial theories supported by your graphics?
+I think my first theory is supported the most since it seems that as Number_of_reviews increases, Review Scores Rating also increases.  The difficult thing is seeing the relationship to price since there's so much overplotted and the outliers kind of compress the data too much in a confined space that you can’t visually identify any patterns.  I think it’s actually possible that as number of reviews increases that price decreases just because those properties must be more affordable, but that has been my only revision to the theories so far.  
 
