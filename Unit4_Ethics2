@@ -1,0 +1,95 @@
+---
+output:
+  html_document: default
+header-includes:
+  - \usepackage{color}
+---
+----
+ Summer 2021: Introduction to Data Science
+---
+
+```{r, echo = F, results = 'hide', message=F, warning = F}
+library(foreign)      #Default package for almost all code, lets your read files into R
+library(ggplot2)      #plotting package
+library(colorspace)   #better colors for ggplot
+library(broom)        #a widely used, but relatively new, package for producing tidier data and tidier output; part of tidyverse
+library(tidyverse)    #a widely used, but relatively new, package for producing tidier data and tidier output
+library(plotly)     #new package
+# library(Hmisc)
+# library(car)
+
+```
+# Unit 4 Ethics 2: Concluding Thoughts
+
+### Group Name:_____(Insert your name here) _____
+### Author:_____Mike Rabayda _____
+### Author:_____Klaire Pham _____
+### Author:_____(Insert your name here) _____
+### Author:_____(Insert your name here) _____
+
+
+$\color{red}{\text{Total Points for Ethics 4.2: 22.5}}$ 
+
+As you have no doubt noticed, there are complicated relationships between all the possible causes of voting behavior in the 2016 election. This lab has you work with your group to discuss what you have concluded from this section.
+
+If your machine slows down while running each chunk, close out the pictures of the graphs (but not the code for the graphs!!) in the .Rmd document. There is a small "x" at the top left corner of the images in the .Rmd document. 
+
+## Template for lab report
+\textbf{Instructions:} This is the template you will use to type up your responses to the exercises. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. Be sure that the document properly knits, then submit the either a .html or .pdf file with your name in the file name.
+
+It is strongly recommended that you knit your document regularly (minimally after answering each exercise) for two reasons. 
+
+  1. Ensure that there are no errors in your code that would prevent the document from knitting.
+  2. View the instructions and your answers in a more legible, attractive format.
+
+## Load data:
+Load the dataset into the R workspace; you do not need to upload the data file, it is already uploaded into RStudioServer. Enter the following command, either by 
+
+  1. placing your cursor a line defining voting data and hitting (PC) Ctrl+Enter OR (Mac) Cmd+Enter OR
+  2. clicking the rightward facing little green arrow.
+In general it is vastly quicker to use your keyboard than it is to use your mouse. The difference is a second or two, but those seconds add up very quickly.
+
+```{r warning= F, message = F, echo = F}
+load(path.expand("~/share/countyData.Rda"))
+load(path.expand("~/share/cces.Rda"))
+# 
+# load(path.expand("countyData.Rda"))
+# load(path.expand("cces.Rda"))
+```
+
+
+
+## Updating your theories
+
+This document knits to a .html document in case you include 3D plots. If you do not include 3D plots, feel free to knit to a .pdf.
+
+We recommend uploading this .Rmd file to your shared group folder and working on it jointly there.
+
+
+### Exercise 1: 4 pts
+What was the theory each partner liked best in Ethic 4.1?
+Mike - My personal favorite theory was as medianIncome16 increases, unemployment rate also increases just because it doesn't seem like a genuine possibility until you start thinking of possible explanations.  You'd expect unemployment to decline if median income increases within a general area, but if median income does not take unemployment into account, then you have a possible explanation of how that theory could be true.  While I think the negative correlation between the two variables is more likely, this is definitely my favorite one to think about.  
+
+
+### Exercise 2: 4 pts
+How would that partner revise their theory in light of the evidence they've seen in this section (answer even if you have changed the variables you looked at, although that makes it more likely your theory has not changed)?
+
+I'd revise it to the negative correlation instead becasue I believe that's the most plausible theory of the two just because I don't want to do the same as I did with the Trump voting data and try to look for a pattern that doesn't actually exist when you plot out the data.  Instead, I want to go with my best guess at what happened and look for patterns within the data and not look for data that supports the patterns I'm thinking exist.    
+
+# Most important graphics 
+
+### Exercise 3: 3 pts
+Which graphic most changed your group's perspective on voting in the 2016 election? Write the code here. 
+
+```{r}
+# Mike - https://plot.ly/~mfoster1/3/
+```
+
+
+### Exercise 4: 4 pts
+Why?
+Mike - This one changed my perspective the most because while keeping education at its average value the green line shows change in Rshift as median income changes.  I thought this was going to a steeper slope but its very horizontal indicating that median income really didn't have an effect on people shifting their vote to Donald Trump. I thought that since many of the explanations of why people voted for Trump had to do with the economy and him being a successful businessman, money would have more to do with the personal reasons people use to choose whom they vote for, but it doesn't seem like it had much effect at all.
+
+
+### Exercise 5: 7.5 pts
+Paste your image into Slack's ethics channel along with your group name and why that image substantially changed your perspective. If you use a 3D plotly graphic, screenshot the image in an orientation (or two) that makes it intelligible.
