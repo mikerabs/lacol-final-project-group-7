@@ -1,0 +1,155 @@
+---
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+header-includes: \usepackage{color}
+always_allow_html: true
+---
+----
+ Summer 2021: Introduction to Data Science
+---
+
+```{r, echo = F, results = 'hide', message=F, warning = F}
+library(foreign)      #Default package for almost all code, lets your read files into R
+library(ggplot2)      #plotting package
+library(colorspace)   #better colors for ggplot
+library(broom)        #a widely used, but relatively new, package for producing tidier data and tidier output; part of tidyverse
+library(tidyverse)    #a widely used, but relatively new, package for producing tidier data and tidier output
+library(stargazer)    #produces pretty regression tables
+library(knitr)        #helps the knitting process. In particular, it lets the include_graphics command run
+library(gridExtra)    #allows grid.arrange() to produce prettier graphics
+library(GGally)       #for hte correlation matrix at the end ggpairs()
+library(ggridges)
+library(corrr)
+library(scales)
+library(plotly)     #new package
+library(knitr)
+
+# additional 
+library(devtools)
+```
+
+# Final Project
+
+## Authors: Michael Rabayda and Klaire Pham
+
+### Loading the data
+
+```{r, echo = T, results = 'hide', message=F, warning = F}
+listings_summary <- read_csv("listings_summary.csv")
+listings <- read_csv("listings.csv")
+```
+
+## Weekly Checkpoint 4.4
+
+The variables that we chose are: number_of_reviews and price in listings.csv, and review_scores_rating in listings_summary.csv.
+
+### 1. Potential theories and expected patterns
+One possible theory could be that as number_of_reviews increases, review_scores_rating also increases since the more people to review a property would indicate that a property is highly desired by the renting community -- which could indicate positive correlation between the two.  Along with that, number_of_reviews increasing could also show a positive relationship with price since many reviews could prompt the owners of the property to increase the price. This same kind of relationship could also be found between review_scores_rating and price since properties scoring higher with better reviews would tend to have higher prices to rent since they are of higher value.
+
+### 2. An alternative theory and its possibility
+Another possible theory could be as number_of_reviews increases, review_scores_rating decreases, and as a result of this the relationship between review_scores_rating and price would also be negative since as price increases, review_scores_rating would decrease. The first part to this theory is less likely than the first as one would expect the quality of reviews to increase if the property is popular, however this could be confounded by the popularity of the area and possible scarcity of available properties to stay in. The second relationship is much more likely to be present, possibly even in the first theory if we look at the data in that way, since price increasing could cause a lesser quality review if the property reaches a threshold where the value of the stay does not meet the satisfaction of the renter paying the exorbitant price.  
+
+### 3. Bivariate analysis and data visualizations 
+
+## This template piece of code is for viewing the distribution of data to make appropriate filtering
+qplot(listings_summary$review_scores_value, 
+      geom= "auto",
+      binwidth=5,  
+      main="Density plot: Review scores value", 
+      xlab="score", 
+      ylab= "Count",
+      fill=I("skyblue"),
+      col=I("white"),
+      alpha=.2)
+
+```{r}
+# Data cleaning
+## For Airbnbs' price, most of the observations (over 22,000 of them) is priced under 350 euros per night. Thus, it is needed to separate the data frame into usable observations and the outliers.
+norm_listings <- listings %>% filter(listings$price <= 1000)
+luxury_listings <- listings %>% filter(listings$price > 1000)
+
+## Reviews score values are mostly over 5 (over 18,000 of them). There are only 61 observations of reviews_rating_value under 5. Thus, I also separated them. Furthermore, I separate the usable data frame into one with number_of_reviews under 300 as well for the same reasons.
+listings_sum_notrv <- listings_summary %>% filter(listings_summary$review_scores_value < 5)
+listings_sum_rv <- listings_summary %>% filter(listings_summary$review_scores_value >= 5)
+listings_sum_rv_cut <- listings_sum_rv %>% filter(listings_sum_rv$number_of_reviews < 1000)
+listings_sum_rv_cut$review_scores_value <- factor(listings_sum_rv_cut$review_scores_value)
+```
+
+### 4. Graphics that show at least three variables in *each* graphic.
+
+```{r}
+# Klaire - Scatterplot: Price and number of reviews 
+ggplot(data = norm_listings, aes(x= price, y= number_of_reviews, alpha = .1)) +
+  facet_wrap(~ neighbourhood_group) + 
+  geom_jitter(aes(size= reviews_per_month)) + 
+  scale_x_log10() +
+  labs(title = "Scatterplot of Berlin Airbnbs' price\nand number of reviews", 
+       x  = "Price per night (euros)", 
+       y = " Number of reviews",
+             color = "Number of reviews",
+       caption = "Data: Kaggle") +
+  theme_bw() +  theme(legend.position = "none")
+
+ggplot(data = luxury_listings, aes(x= price, 
+                                   y= number_of_reviews, color = "skyblue", alpha = .1)) +
+  geom_jitter(aes(size= reviews_per_month)) + 
+  labs(title = "Scatterplot of Berlin Airbnbs' price\nand number of reviews", 
+       x  = "Price per night (euros)", 
+       y = " Number of reviews",
+             color = "Number of reviews",
+       caption = "Data: Kaggle") +
+  theme_bw() +  theme(legend.position = "none")
+```
+
+#Klaire 
+
+The scatterplots show the relationship between price and number of reviews with reviews per month as the size of the points. In the first plot showing data from norm_listings, since the difference between the size of the points is not significant and most plot is heavily skewed towards the bottom right of the chart, it doesn't add too much new information. It can be inferred still that there is a slight negative correlation between price and number of reviews starting from Airbnb's that charged over 50 a night. There are definitely some interesting outliers -- places that receive exceptionally higher number of reviews also had more reviews per month than average. With the plot showing data from luxury_listings, the slightly negative correlation continues and the size of the points are less consistent. However, most useful data is clustered in the lower end, suggesting that there should be another round of filtering to inspect them appropriately. 
+
+The theories are supported by this graphic but not in the way that we stated earlier. With the addition of the variable review_per_month, an addition to the theory would be that as number of reviews increases, number of reviews per month increases as well. Honestly, after visualizing the data from the three chosen variables, it seems to me that we should revise altogether to figure out a set of new variables that work together better or better ways to visualize these relationships.
+
+```{r}
+# Mikes 3 variable plots
+plotnumRevRatePrice <- plot_ly(listings_summary, 
+                               x = ~number_of_reviews, 
+                               y = ~review_scores_rating,
+                               z = ~price ) %>%
+   add_markers(size = 5) %>% 
+   colorbar(title = "Price") %>%
+   layout(title = "Final Project - Airbnb prices by number of reviews and review rating score.",
+          scene = list(xaxis = list(title = 'Number of Reviews'),
+                       yaxis = list(title = 'Review Score Rating'),
+                       zaxis = list(title = 'Price')))
+
+# htmlwidgets::saveWidget(plotnumRevRatePrice, "Final_plotnumRevRatePrice.html")  #save the interactive images as a .html file
+
+plotnumRevRatePrice
+browseURL(path.expand("Final_plotnumRevRatePrice.html.html"))
+
+plot_price_byNumReview <- ggplot(listings_summary, aes(x=number_of_reviews, y=price)) +
+   geom_point(data=listings_summary, aes(x=number_of_reviews,y=price ))+
+   scale_color_gradient2(low = "lightgrey", high = "red")+
+   labs(title = "Airbnb: Price to NumberofReviews",
+        x="Number of Reviews", 
+        y="Price in $" )+
+   theme_bw() + theme(legend.position = "none")
+
+plot_price_byReviewScore <- ggplot(listings_summary, aes(x=review_scores_rating, y=price))+
+   geom_point(data=listings_summary, aes(x=review_scores_rating,y=price ))+
+   scale_color_gradient2(low = "lightgrey", high = "red")+
+   labs(title = "Airbnb: Price to Review Score",
+        x="Review Scores Rating", 
+        y="Price in $" )+
+   theme_bw() + theme(legend.position = "none")
+
+grid.arrange(plot_price_byNumReview, plot_price_byReviewScore, ncol = 2)
+```
+
+#Mike
+
+What does your three variable + plot show that your 2 variable plots did not?
+First it shows that there are definitely some outliers and overplotting that we’re going to need to learn how to handle. The 3 dimensional graph really did a good job showing me where most of the data clusters, I think the next step would be to see which variables are skewed and need to be transformed so that we have normal distributions to relate and analyze.  The biggest thing was definitely seeing all 3 variables plotted together because its so much clearer that just plotting price with either of the remaining two variables as seen with the faceted 2D graphs. 
+
+Are either of your initial theories supported by your graphics?
+I think my first theory is supported the most since it seems that as Number_of_reviews increases, Review Scores Rating also increases.  The difficult thing is seeing the relationship to price since there's so much overplotted and the outliers kind of compress the data too much in a confined space that you can’t visually identify any patterns.  I think it’s actually possible that as number of reviews increases that price decreases just because those properties must be more affordable, but that has been my only revision to the theories so far.  
